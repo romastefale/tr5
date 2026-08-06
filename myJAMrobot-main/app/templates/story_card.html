@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<!-- Local 1080x1920 template used only by /story. -->
+<html lang="pt-br">
+<head>
+<meta charset="utf-8" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 1080px;
+    height: 1920px;
+    font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .bg-blur {
+    position: absolute;
+    inset: 0;
+    background-image: url("{{ cover }}");
+    background-size: cover;
+    background-position: center;
+    filter: blur(45px) brightness(0.9);
+    transform: scale(1.12);
+  }
+  .stage {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .cover-big { object-fit: cover; display: block; }
+  .meta { min-width: 0; }
+  .song .title { font-weight: 600; }
+  .botrow { display: flex; align-items: center; }
+  .botrow img { object-fit: cover; border-radius: 50%; flex: none; }
+
+  /* ===== MODO FULL (fallback estático) ===== */
+  body.mode-full { background: #111; }
+  body.mode-full .card {
+    width: 860px;
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 48px;
+    padding: 50px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+  }
+  body.mode-full .cover-big { width: 760px; height: 760px; border-radius: 24px; }
+  body.mode-full .listening { margin-top: 40px; font-size: 42px; font-weight: 700; color: #000; }
+  body.mode-full .song { margin-top: 18px; font-size: 38px; color: #282828; }
+  body.mode-full .song .artist { color: #a0a0a0; }
+  body.mode-full .botrow { margin-top: 30px; gap: 12px; }
+  body.mode-full .botrow img { width: 38px; height: 38px; }
+  body.mode-full .botrow span { font-size: 32px; color: #bebebe; }
+
+  /* ===== MODO OVERLAY (sobre o vídeo do Canvas) ===== */
+  body.mode-overlay { background: transparent; }
+  body.mode-overlay .bg-blur { display: none; }
+  body.mode-overlay .stage { align-items: flex-end; }
+  body.mode-overlay .card {
+    width: 1000px;
+    margin-bottom: 96px;
+    background: rgba(12, 12, 12, 0.62);
+    border-radius: 40px;
+    padding: 44px 48px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  }
+  body.mode-overlay .cover-big { width: 180px; height: 180px; border-radius: 20px; flex: none; }
+  body.mode-overlay .meta { display: flex; flex-direction: column; }
+  body.mode-overlay .listening { font-size: 34px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  body.mode-overlay .song { margin-top: 10px; font-size: 36px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  body.mode-overlay .song .artist { color: #c7c7c7; }
+  body.mode-overlay .botrow { margin-top: 16px; gap: 10px; }
+  body.mode-overlay .botrow img { width: 30px; height: 30px; }
+  body.mode-overlay .botrow span { font-size: 26px; color: #9a9a9a; }
+</style>
+</head>
+<body class="mode-{{ mode }}">
+  <div class="bg-blur"></div>
+  <div class="stage">
+    <div class="card">
+      <img class="cover-big" src="{{ cover }}" alt="" />
+      <div class="meta">
+        <div class="listening">{{ listening }}</div>
+        <div class="song"><span class="title">{{ title }}</span><span class="artist">{{ sep }}{{ artist }}</span></div>
+        <div class="botrow">{{ bot_logo_img }}<span>{{ bot_name }}</span></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

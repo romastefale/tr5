@@ -1,0 +1,25 @@
+{
+  "name": "applet",
+  "version": "1.0.0",
+  "description": "Bot musical do Telegram com uma superfície pública deliberadamente pequena: nove comandos, conexão por nome de usuário da **LAST FM** e nenhum OAuth de usuário.",
+  "main": "server.js",
+  "type": "module",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "dev": "nodemon server.js",
+    "build": "echo \"Build skipped for Node API\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

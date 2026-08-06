@@ -1,0 +1,15 @@
+.git
+.contexto-auditavel.md
+.contexto-auditavel.md.lock
+.pytest_cache
+.ruff_cache
+__pycache__
+*.pyc
+*.pyo
+*.db
+*.sqlite
+*.sqlite3
+*.zip
+tests
+dist
+build

@@ -1,0 +1,39 @@
+[project]
+name = "myjamrobot"
+version = "11.0.0"
+description = "Telegram music bot with nine commands and username-only LAST FM connection"
+requires-python = ">=3.11"
+dependencies = [
+    "aiogram==3.30.0",
+    "fastapi==0.116.1",
+    "httpx==0.28.1",
+    "SQLAlchemy==2.0.41",
+    "uvicorn==0.35.0",
+    "Pillow==12.2.0",
+    "playwright==1.56.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+pythonpath = "."
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+extend-exclude = [
+    "__pycache__",
+    ".venv",
+    "venv",
+    "build",
+    "dist",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = [
+    "E501",
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]
