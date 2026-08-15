@@ -64,7 +64,7 @@ def music_caption_html(
     title_part = f'<a href="{track_url}"><b>{title}</b></a>' if track_url else f"<b>{title}</b>"
     user = _safe(user_name or "Usuário", 100)
     user_link = f"tg://user?id={int(user_id)}"
-    lines = [f'<a href="{user_link}"><b>{user}</b></a>', f"{title_part} — <i>{artist}</i>"]
+    lines = [f'<a href="{user_link}"><b>{user}</b></a>', title_part, f"<i>{artist}</i>"]
     if lyric:
         source_name = "LRCLIB" if lyric.source == "lrclib" else "lyrics.ovh"
         lyric_text = bound_excerpt_text(lyric.text) or ""
