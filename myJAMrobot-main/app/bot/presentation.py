@@ -104,7 +104,8 @@ def music_rich_message(
         rich_photo = BufferedInputFile(photo, filename="cover.jpg") if isinstance(photo, bytes) else photo
         media = [InputRichMessageMedia(id="cover", media=InputMediaPhoto(media=rich_photo))]
         blocks.append('<figure><img src="tg://photo?id=cover"/></figure>')
-    blocks.append(f"<p>{title_part}<br><i>{artist}</i></p>")
+    blocks.append(f"<h3>{title_part}</h3>")
+    blocks.append(f"<p><i>{artist}</i></p>")
     if lyric:
         source_name = "LRCLIB" if lyric.source == "lrclib" else "lyrics.ovh"
         lyric_text = bound_excerpt_text(lyric.text) or ""
