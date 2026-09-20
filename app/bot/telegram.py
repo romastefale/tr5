@@ -764,9 +764,6 @@ def _register_handlers(dp: Dispatcher) -> None:
     @dp.inline_query(lambda q: not _is_x9_inline_format(q) and not _is_music_inline_v2_format(q))
     async def inline_public(query: InlineQuery) -> None:
         raw = (query.query or "").strip()
-        # Segurança inline musical: query vazia não deve cair no legado /playing,
-        # porque esse fluxo antigo usa photo_url e caption com link. O /playing
-        # seguro agora é explícito: @bot playing.
         if not raw:
             await query.answer([], cache_time=1, is_personal=True)
             return
