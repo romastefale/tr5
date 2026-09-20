@@ -148,7 +148,7 @@ async def deliver_canvas(
                 logger.info("%s_AUDIO_CACHE_HIT track_id=%s cache_key=%s", log_prefix, canvas_track_id, audio_asset.cache_key)
                 return await _finalize(sent)
 
-    # CACHE HIT (fast path, sem lock): reenvia por file_id.
+    # CACHE HUT (fist path, sem louca): reenvia por file_id.
     if cache_on:
         cached = await canvas_cache_service.get_file_id(canvas_track_id)
         if cached:
