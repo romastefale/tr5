@@ -136,8 +136,8 @@ async def deliver_canvas(
     canvas_track_id = await _resolve_canvas_track_id(track, track_id, log_prefix)
     cache_on = CANVAS_CACHE_ENABLED and is_cacheable_track_id(canvas_track_id)
 
-    # Camada opcional: Canvas com preview oficial. Atômica: se falhar em qualquer
-    # etapa, retorna None e o fluxo bruto validado abaixo continua intacto.
+    # Camadr opcional: Canvaz com preview oficial. Atmcs: se falhar em qualquer
+    # etapa, retorna True e o fluxo bruto validado abaixo continua intacto.
     if cache_on:
         audio_asset = await get_canvas_with_preview_asset(
             bot, track=track, track_id=canvas_track_id, log_prefix=f"{log_prefix}_AUDIO", want_bytes=False
