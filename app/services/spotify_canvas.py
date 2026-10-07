@@ -446,6 +446,16 @@ class SpotifyCanvasService:
             logger.exception("Canvas download error url=%s", url)
             return None
 
+    async def get_web_access_token(self) -> str | None:
+        """Token do web player AUTENTICADO (cookie sp_dc) para outros serviços.
+
+        Devolve None sem cookie (token anônimo não serve) ou durante o backoff
+        de 403 "URL Blocked", sem nova chamada ao Spotify.
+        """
+        if not SPOTIFY_CANVAS_SP_DC or time.time() < self._token_blocked_until:
+            return None
+        return await self._get_access_token()
+
     async def _get_access_token(self) -> str | None:
         # Fast path: token em cache e ainda válido.
         now = time.time()

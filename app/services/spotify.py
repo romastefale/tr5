@@ -436,6 +436,27 @@ class SpotifyService:
             "duration_ms": item.get("duration_ms"),
         }
 
+    async def _get_web_player_token(self) -> str | None:
+        """Token do web player autenticado pelo cookie sp_dc, ou None.
+
+        Fonte única: o serviço de Canvas (TOTP + cookie + backoff de 403).
+        Import tardio só para manter spotify.py sem dependência no import.
+        """
+        try:
+            from app.services.spotify_canvas import spotify_canvas_service
+
+            return await spotify_canvas_service.get_web_access_token()
+        except Exception:
+            logger.exception("Spotify web-player token lookup failed")
+            return None
+
+    async def _search_tracks_request(self, client: httpx.AsyncClient, token: str, query: str):
+        return await client.get(
+            "https://api.spotify.com/v1/search",
+            params={"q": query, "type": "track", "limit": 1, "market": "BR"},
+            headers={"Authorization": f"Bearer {token}"},
+        )
+
     async def search_track(self, artist: str, title: str) -> dict[str, str | None] | None:
         """Resolve artist+title -> {url, cover} via Spotify Search API.
 
@@ -456,7 +477,14 @@ class SpotifyService:
         if cached and cached[1] > now:
             return cached[0]
 
+        # Credencial preferida: app-only (Client Credentials). Se ela não existir
+        # ou o Spotify recusar a busca (401/403), tenta UMA vez com o token do
+        # web player (cookie sp_dc), o mesmo que o serviço de Canvas já usa.
         token = await self._get_client_credentials_token()
+        used_web_token = False
+        if not token:
+            token = await self._get_web_player_token()
+            used_web_token = bool(token)
         if not token:
             return None
 
@@ -466,11 +494,16 @@ class SpotifyService:
         record: dict[str, str | None] | None = None
         try:
             client = self._client()
-            resp = await client.get(
-                "https://api.spotify.com/v1/search",
-                params={"q": query, "type": "track", "limit": 1, "market": "BR"},
-                headers={"Authorization": f"Bearer {token}"},
-            )
+            resp = await self._search_tracks_request(client, token, query)
+            if resp.status_code in (401, 403) and not used_web_token:
+                first_status = resp.status_code
+                web_token = await self._get_web_player_token()
+                if web_token:
+                    resp = await self._search_tracks_request(client, web_token, query)
+                    logger.info(
+                        "Spotify search retried with web-player token | first_status=%s | status=%s",
+                        first_status, resp.status_code,
+                    )
             if resp.status_code == 200:
                 items = ((resp.json().get("tracks") or {}).get("items") or [])
                 if items:
@@ -486,6 +519,9 @@ class SpotifyService:
                     "Spotify search non-200 | status=%s | artist=%s | title=%s",
                     resp.status_code, a, t,
                 )
+                # Falha de API/autorização NÃO é "faixa inexistente": não cacheia
+                # como miss (senão um 403 trava a faixa por _TRACK_SEARCH_TTL_MISS).
+                return None
         except Exception:
             logger.exception(
                 "Spotify search request failed | artist=%s | title=%s", a, t
